@@ -1,28 +1,25 @@
-name: Build APK
+name: Build
 on: [push, workflow_dispatch]
-
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  apk:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Sistem Gereksinimlerini Yukle
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-
-      - name: Buildozer Kur
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install Cython==0.29.33 buildozer
-
-      - name: APK Paketle
+          pip install buildozer cython==0.29.33
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+      - name: Build APK
         run: |
           yes | buildozer android debug
-
-      - name: APK Yukle
+      - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: uygulama-paketi
+          name: paket-geldi
           path: bin/*.apk
