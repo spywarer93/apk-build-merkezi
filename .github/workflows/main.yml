@@ -1,25 +1,30 @@
-name: Build
+name: Build_APK
 on: [push, workflow_dispatch]
+
 jobs:
-  apk:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Python
+
+      - name: Python_Kur
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Install dependencies
+
+      - name: Sistem_Paketlerini_Yukle
         run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.33
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-      - name: Build APK
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip install --upgrade pip
+          pip install Cython==0.29.33 buildozer
+
+      - name: APK_Paketle
         run: |
           yes | buildozer android debug
-      - name: Upload APK
+
+      - name: APK_Disari_Aktar
         uses: actions/upload-artifact@v3
         with:
-          name: paket-geldi
+          name: ip-uygulamasi
           path: bin/*.apk
