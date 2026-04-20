@@ -1,35 +1,25 @@
-name: APK Build
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+name: Build_APK
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
-      - name: Python Kur
+      - name: Setup_Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Sistem Paketlerini Yukle
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-          pip install --upgrade pip
-          pip install Cython==0.29.33 buildozer
+      - name: Build_with_Buildozer
+        uses: ArtemSerebrennkov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          buildozer_version: master
 
-      - name: APK Paketle
-        run: |
-          yes | buildozer android debug
-        
-      - name: APKyi Disari Aktar
+      - name: Upload_APK
         uses: actions/upload-artifact@v3
         with:
-          name: ip-takip-uygulamasi
+          name: APK_Dosyam
           path: bin/*.apk
